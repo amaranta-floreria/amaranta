@@ -4,7 +4,6 @@ const avenir = localFont({ src: '../../public/fonts/avenir_next.ttf' })
 
 export default function Home() {
 	return (
-
 		<div className={'h-screen flex flex-col items-center justify-center animate-pulse font-semibold ' + avenir.className}>
 			<Image
 				className="object-none object-center"
