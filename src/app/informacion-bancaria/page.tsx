@@ -43,7 +43,7 @@ export default function BankInformation() {
 						<div className="absolute bottom-10 px-4 py-3 w-full text-center">
 							<p className="text-base"> 4217470021188921 </p>
 							<p className="text-base"> Vanessa Urzúa </p>
-							<p className="text-base"> Debito </p>
+							<p className="text-base"> Débito </p>
 						</div>
 					</div>
 				</SwiperSlide>
@@ -67,7 +67,7 @@ export default function BankInformation() {
 						<div className="absolute bottom-10 px-4 py-3 w-full text-center">
 							<p className="text-black-200"> 012180015302741892 </p>
 							<p className="text-black-200"> Vanessa Urzúa </p>
-							<p className="text-black-200"> Debito </p>
+							<p className="text-black-200"> Débito </p>
 						</div>
 					</div>
 				</SwiperSlide>
