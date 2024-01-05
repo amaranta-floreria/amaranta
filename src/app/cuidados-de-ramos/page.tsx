@@ -4,8 +4,8 @@ export default function BouquetCare() {
 	return (
 		<div className='h-screen flex flex-col items-center justify-center font-bold'>
 			<Image
-				className="w-full max-h-[600px] max-w[500px]"
-				src="/bouquet_care.jpeg"
+				className="w-full max-w-[500px]"
+				src="/bouquet_care.png"
 				alt="amaranta_logo Logo"
 				width={0}
 				height={0}
