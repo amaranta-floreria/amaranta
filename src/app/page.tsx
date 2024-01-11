@@ -20,6 +20,11 @@ export default function Home() {
 				priority
 			/>
 			<p className='text-[50px] text-[#d89f94] tracking-wide  animate-pulse'>Amaranta</p>
+
+			<div className='flex flex-col sm:flex-row space-x-4 space-y-4 sm:space-y-0 '>
+				<Link className='text-base tracking-wide' href="https://www.instagram.com/_amarantafloreria/">Instagram</Link>
+				<Link className='text-base tracking-wide' href="https://api.whatsapp.com/message/FNMQNSMSPFDLE1?autoload=1&app_absent=0">Whatsapp</Link>
+			</div>
 		</div>
 	)
 }
