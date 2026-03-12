@@ -20,7 +20,7 @@ const router = useRouter()
         <div className="text-center">
           <h1 className="text-2xl text-gray-800 mb-4">Product Not Found</h1>
           <div  className="text-rose-500 hover:text-rose-600 font-medium flex items-center justify-center gap-2">
-            <ArrowLeft className="w-4 h-4" onClick={() => router.push(`/catalogo/san-valentin/2026`)}/>
+            <ArrowLeft className="w-4 h-4" onClick={() => router.push(`/catalogo/flores-amarillas/2026`)}/>
             Back to Home
           </div>
         </div>
@@ -36,7 +36,7 @@ const router = useRouter()
           className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors text-gray-700"
           aria-label="Back to home"
         >
-          <ArrowLeft className="w-6 h-6" onClick={() => router.push(`/catalogo/san-valentin/2026`)} />
+          <ArrowLeft className="w-6 h-6" onClick={() => router.push(`/catalogo/flores-amarillas/2026`)} />
         </div>
         <span className="text-lg font-medium tracking-wide text-gray-800 truncate px-4">
           {product.name}

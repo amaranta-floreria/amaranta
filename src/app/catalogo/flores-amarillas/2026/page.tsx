@@ -9,7 +9,7 @@ export default function Catalog() {
     const router = useRouter()
     
     const handleProductClick = (product: Product) => {
-        router.push(`/catalogo/san-valentin/2026/${product.id}`);
+        router.push(`/catalogo/flores-amarillas/2026/${product.id}`);
     };
 
     return (

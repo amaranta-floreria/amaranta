@@ -18,7 +18,7 @@ export function HeaderImage() {
               Catálogo
             </h1>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-              San Valentin 2026
+              Flores Amarillas 2026
             </p>
           </div>
         </div>
