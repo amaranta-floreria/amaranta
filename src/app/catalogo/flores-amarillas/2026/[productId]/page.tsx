@@ -59,7 +59,7 @@ const router = useRouter()
           {/* Header Info */}
           <div className="space-y-4">
             <div className="inline-block px-3 py-1 bg-rose-50 text-rose-600 text-sm font-medium rounded-full">
-              San Valentin
+              Flores Amarillas
             </div>
             
             <div className="flex flex-col gap-2">
