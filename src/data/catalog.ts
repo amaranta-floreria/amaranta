@@ -3,7 +3,7 @@ import { Product } from "@/types/product";
 export const catalog: Product[] = [
   {
     id: "1",
-    name: "Algodon",
+    name: "Algodón",
     price: 3000,
     imageUrl: "https://cns8nmi1edqdsaeg.public.blob.vercel-storage.com/amarillas-2026/algodon.jpeg",
     description: "🌼 Ramo Mixto · Tonos Blancos, Rosas y Amarillo.",
@@ -43,7 +43,7 @@ export const catalog: Product[] = [
   },
   {
     id: "6",
-    name: "Limon",
+    name: "Limón",
     price: 580,
     imageUrl: "https://cns8nmi1edqdsaeg.public.blob.vercel-storage.com/amarillas-2026/limon.jpeg",
     description: "🌸 Ramo de Gerberas con Encaje · Sencillo y encantador",

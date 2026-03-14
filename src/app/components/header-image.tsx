@@ -11,15 +11,10 @@ export function HeaderImage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
           </div>
-
-          {/* Tagline */}
           <div className="text-center space-y-3">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl text-gray-800 tracking-tight">
-              Catálogo
-            </h1>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl text-gray-800 tracking-tight">
               Flores Amarillas 2026
-            </p>
+            </h2>
           </div>
         </div>
       </div>

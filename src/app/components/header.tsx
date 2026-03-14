@@ -7,7 +7,7 @@ export function Header() {
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center gap-2">
                         <Flower2 className="w-6 h-6 text-rose-400" strokeWidth={1.5} />
-                        <span className="text-lg tracking-wide text-gray-800">Amaranta Floreria</span>
+                        <span className="text-lg tracking-wide text-gray-800">Amaranta</span>
                     </div>
                 </div>
             </div>

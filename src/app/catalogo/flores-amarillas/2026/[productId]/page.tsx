@@ -81,7 +81,7 @@ const router = useRouter()
             </p>
           </div>
 
-          <div className="bg-gray-50 rounded-2xl p-6 space-y-3 text-gray-600">
+          <div className="bg-gray-50 rounded-2xl p-6 space-y-3 text-gray-800">
             <div className="flex items-center gap-3">
               <span className="text-rose-400">✓</span>
               <span>Flores frescas</span>
@@ -95,7 +95,8 @@ const router = useRouter()
               <span>Incluye una carta para dejar un mensaje</span>
             </div>
             <div className="flex items-center gap-3">
-              <span><strong>Importante: Flores podrian variar segun disponibilidad</strong></span>
+              <span className="text-rose-400">✓</span>
+              <span><strong>Importante: Flores podrian variar según disponibilidad</strong></span>
             </div>
           </div>
         </div>
