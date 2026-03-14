@@ -5,7 +5,7 @@ export function HeaderImage() {
         <div className="py-12 sm:py-16 lg:py-20">
           <div className="relative h-48 sm:h-64 lg:h-80 rounded-2xl overflow-hidden mb-8">
             <img
-              src={"https://cns8nmi1edqdsaeg.public.blob.vercel-storage.com/sanvalentin2026/gerebera.png"}
+              src={"https://cns8nmi1edqdsaeg.public.blob.vercel-storage.com/portada.jpeg"}
               alt="Beautiful flowers"
               className="w-full h-full object-cover object-[20%_44%]"
             />

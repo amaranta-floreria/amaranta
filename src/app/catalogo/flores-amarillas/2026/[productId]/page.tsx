@@ -74,15 +74,13 @@ const router = useRouter()
 
           <div className="h-px bg-gray-100" />
 
-          {/* Description */}
           <div className="space-y-3">
-            <h3 className="text-lg text-gray-900 font-medium">Acerca de</h3>
-            <p className="text-gray-600 leading-relaxed text-lg">
+            <h3 className="text-lg text-gray-900 font-medium">{product.description}</h3>
+            <p className="text-gray-600 leading-relaxed text-lg whitespace-pre-line">
               {product.longDescription}
             </p>
           </div>
 
-          {/* Features */}
           <div className="bg-gray-50 rounded-2xl p-6 space-y-3 text-gray-600">
             <div className="flex items-center gap-3">
               <span className="text-rose-400">✓</span>
@@ -95,6 +93,9 @@ const router = useRouter()
             <div className="flex items-center gap-3">
               <span className="text-rose-400">✓</span>
               <span>Incluye una carta para dejar un mensaje</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span><strong>Importante: Flores podrian variar segun disponibilidad</strong></span>
             </div>
           </div>
         </div>
