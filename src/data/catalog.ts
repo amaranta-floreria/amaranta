@@ -36,7 +36,7 @@ export const catalog: Product[] = [
   {
     id: "5",
     name: "Lima",
-    price: 2800,
+    price: 3000,
     imageUrl: "https://cns8nmi1edqdsaeg.public.blob.vercel-storage.com/amarillas-2026/lima.jpeg",
     description: "🌸 Ramo Mixto · Delicadeza en cada detalle",
     longDescription: "Composición floral que reúne mini rosas, gerberas, lisianthus, rosas, santa maría y perritos en una mezcla sofisticada de texturas y volumen. Cada flor aporta su carácter propio, logrando un arreglo equilibrado, abundante y de gran presencia."
@@ -44,7 +44,7 @@ export const catalog: Product[] = [
   {
     id: "6",
     name: "Limón",
-    price: 580,
+    price: 600,
     imageUrl: "https://cns8nmi1edqdsaeg.public.blob.vercel-storage.com/amarillas-2026/limon.jpeg",
     description: "🌸 Ramo de Gerberas con Encaje · Sencillo y encantador",
     longDescription: "Composición floral de 5 gerberas frescas acompañadas de encaje, un follaje delicado que enmarca cada flor y le aporta ligereza y elegancia al arreglo."
@@ -68,7 +68,7 @@ export const catalog: Product[] = [
   {
     id: "9",
     name: "Mango",
-    price: 550,
+    price: 590,
     imageUrl: "https://cns8nmi1edqdsaeg.public.blob.vercel-storage.com/amarillas-2026/mango.jpeg",
     description: "🧭 Canasta Floral Surtida · Margaritas y Mini Girasoles",
     longDescription: "Encantador arreglo en canasta con una selección de margaritas y mini girasoles frescos. Una combinación alegre y natural que aporta calidez y color a cualquier espacio, perfecta también como detalle decorativo."
