@@ -11,11 +11,6 @@ export function HeaderImage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
           </div>
-          <div className="text-center space-y-3">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl text-gray-800 tracking-tight">
-              Flores Amarillas 2026
-            </h2>
-          </div>
         </div>
       </div>
     </section>

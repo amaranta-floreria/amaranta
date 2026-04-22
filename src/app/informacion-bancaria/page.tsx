@@ -2,10 +2,6 @@
 import { Pagination } from 'swiper/modules';
 import localFont from 'next/font/local'
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
 import Image from 'next/image';
 
 const avenir = localFont({ src: '../../../public/fonts/avenir_next.ttf' })
