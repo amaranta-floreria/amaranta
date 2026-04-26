@@ -62,35 +62,14 @@ export default function Home() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.15, ease }}
         >
-          <Image
-            className="object-none object-center"
-            src="/amaranta_logo.png"
+
+          <img
+            src="/amaranta_logo_letras.png"
             alt="Amaranta"
-            width={180}
-            height={37}
-            priority
-          />
+            className="size-60 object-center transition-transform duration-700 group-hover:scale-105"
+                  />
+        
         </motion.div>
-
-        {/* Brand name */}
-        <motion.p
-          className="text-[56px] sm:text-[72px] font-bold text-[#d89f94] tracking-[0.12em] leading-none mt-1"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          Amaranta
-        </motion.p>
-
-        {/* Subtitle */}
-        <motion.p
-          className="text-[10px] tracking-[0.4em] uppercase text-[#c9a8a0] mt-2 mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.6 }}
-        >
-          Florería
-        </motion.p>
 
         {/* Animated divider */}
         <motion.div

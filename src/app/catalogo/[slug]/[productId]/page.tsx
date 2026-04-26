@@ -1,8 +1,24 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import localFont from 'next/font/local';
+import Link from 'next/link';
+import { motion } from 'motion/react';
 import { getProductsByCatalog, AdminProduct } from '@/lib/firestore';
 import { ArrowLeft } from 'lucide-react';
+
+const avenir = localFont({ src: '../../../../../public/fonts/avenir_next.ttf' });
+
+const ease = [0.16, 1, 0.3, 1] as const;
+
+const WHATSAPP_NUMBER = '523122141945';
+
+const DETAILS = [
+  'Flores frescas',
+  'Disponibilidad limitada',
+  'Incluye carta para dejar un mensaje',
+  'Flores podrían variar según disponibilidad',
+];
 
 interface Props {
   params: { slug: string; productId: string };
@@ -25,22 +41,30 @@ export default function DynamicProductDetailPage({ params }: Props) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-6 h-6 rounded-full border-2 border-rose-300 border-t-transparent animate-spin" />
+      <div
+        className={`min-h-screen flex items-center justify-center ${avenir.className}`}
+        style={{ background: '#fdf8f5' }}
+      >
+        <div className="w-4 h-4 rounded-full border-[1.5px] border-[#d89f94] border-t-transparent animate-spin" />
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div
+        className={`min-h-screen flex items-center justify-center p-6 ${avenir.className}`}
+        style={{ background: '#fdf8f5' }}
+      >
         <div className="text-center">
-          <h1 className="text-2xl text-gray-800 mb-4">Producto no encontrado</h1>
+          <p className="text-[13px] tracking-wide text-[#b09890] mb-6">
+            Producto no disponible.
+          </p>
           <button
             onClick={() => router.push(`/catalogo/${slug}`)}
-            className="text-rose-500 hover:text-rose-600 font-medium flex items-center justify-center gap-2"
+            className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase text-[#b09890] hover:text-[#d89f94] transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft size={12} strokeWidth={1.5} />
             Volver al catálogo
           </button>
         </div>
@@ -48,81 +72,142 @@ export default function DynamicProductDetailPage({ params }: Props) {
     );
   }
 
+  const whatsappMessage = encodeURIComponent(
+    `Hola! Me interesa este producto: ${product.name} ($${product.price.toLocaleString('es-MX')})`
+  );
+  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 h-16 flex items-center justify-between">
-        <div
-          className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors text-gray-700 cursor-pointer"
+    <div
+      className={`min-h-screen flex flex-col text-[#2d1f1a] ${avenir.className}`}
+      style={{ background: '#fdf8f5' }}
+    >
+      {/* Header */}
+      <motion.header
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease }}
+        className="pt-6 pb-4 px-6 flex items-center justify-center relative"
+      >
+        <button
           onClick={() => router.push(`/catalogo/${slug}`)}
-          aria-label="Volver al catálogo"
+          className="absolute left-6 flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase text-[#b09890] hover:text-[#d89f94] transition-colors duration-300"
         >
-          <ArrowLeft className="w-6 h-6" />
-        </div>
-        <span className="text-lg font-medium tracking-wide text-gray-800 truncate px-4">
-          {product.name}
-        </span>
-        <div className="w-10" />
-      </header>
+          <ArrowLeft size={12} strokeWidth={1.5} />
+          Catálogo
+        </button>
+        <Link
+          href="/"
+          className="text-[10px] tracking-[0.28em] uppercase text-[#b09890] hover:text-[#d89f94] transition-colors duration-300"
+        >
+          Amaranta
+        </Link>
+      </motion.header>
 
-      <main className="pb-8">
-        {/* Product Image */}
-        <div className="relative aspect-square sm:aspect-[4/3] w-full overflow-hidden bg-gray-50">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        {/* Product Content */}
-        <div className="max-w-screen-md mx-auto p-6 sm:p-8 space-y-8">
-          <div className="space-y-4">
-            <div className="inline-block px-3 py-1 bg-rose-50 text-rose-600 text-sm font-medium rounded-full">
-              {slug.replace(/-/g, ' ')}
-            </div>
-            <div className="flex flex-col gap-2">
-              <h1 className="text-3xl sm:text-4xl text-gray-900 font-light">
-                {product.name}
-              </h1>
-              <p className="text-2xl sm:text-3xl text-rose-500 font-medium">
-                ${product.price.toLocaleString('es-MX')}
-              </p>
-            </div>
+      <main className="flex-1 flex flex-col items-center pb-10 w-full max-w-lg mx-auto">
+        {/* Product image */}
+        <motion.div
+          className="w-full overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.1, ease }}
+        >
+          <div className="aspect-square w-full">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
           </div>
+        </motion.div>
 
-          <div className="h-px bg-gray-100" />
+        {/* Content */}
+        <motion.div
+          className="w-full px-6 pt-7"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65, delay: 0.25, ease }}
+        >
+          {/* Catalog label */}
+          <p className="text-[9px] tracking-[0.32em] uppercase text-[#c9a8a0] mb-3">
+            {slug.replace(/-/g, ' ')}
+          </p>
 
-          <div className="space-y-3">
-            {product.description && (
-              <h3 className="text-sm text-rose-500 font-medium">{product.description}</h3>
-            )}
-            <p className="text-gray-600 leading-relaxed text-base whitespace-pre-line">
-              {product.longDescription}
+          {/* Name + price */}
+          <h1 className="text-[22px] font-light leading-snug text-[#2d1f1a] mb-2">
+            {product.name}
+          </h1>
+          <p className="text-[20px] font-medium text-[#d89f94] mb-6">
+            ${product.price.toLocaleString('es-MX')}
+          </p>
+
+          {/* Divider */}
+          <div className="h-px bg-[#edd8d0] mb-6" />
+
+          {/* Description */}
+          {(product.description || product.longDescription) && (
+            <div className="mb-6 space-y-2">
+              {product.description && (
+                <p className="text-[12px] tracking-wide font-medium text-[#7a5c56]">
+                  {product.description}
+                </p>
+              )}
+              {product.longDescription && (
+                <p className="text-[13px] leading-[1.8] text-[#5a4040] whitespace-pre-line">
+                  {product.longDescription}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Details */}
+          <div
+            className="rounded-2xl p-5 mb-8 space-y-3"
+            style={{
+              background: 'rgba(255,252,250,0.95)',
+              border: '1px solid #edd8d0',
+            }}
+          >
+            <p className="text-[8px] tracking-[0.32em] uppercase text-[#c9a8a0] mb-4">
+              Detalles
             </p>
-          </div>
-
-          <div className="bg-gray-50 rounded-2xl p-6 space-y-3 text-gray-800">
-            <p className="text-xs uppercase tracking-widest text-rose-400 font-medium mb-4">Detalles</p>
-            {[
-              'Flores frescas',
-              'Disponibilidad limitada',
-              'Incluye una carta para dejar un mensaje',
-            ].map((item) => (
-              <div key={item} className="flex items-center gap-3">
-                <span className="text-rose-400">✓</span>
-                <span>{item}</span>
+            {DETAILS.map((item) => (
+              <div key={item} className="flex items-start gap-3">
+                <span className="text-[#d89f94] mt-0.5 text-[11px]">✦</span>
+                <span className="text-[12px] leading-snug text-[#5a4040]">{item}</span>
               </div>
             ))}
-            <div className="flex items-center gap-3">
-              <span className="text-rose-400">✓</span>
-              <span><strong>Importante: Flores podrían variar según disponibilidad</strong></span>
-            </div>
           </div>
-        </div>
+
+          {/* WhatsApp CTA */}
+          <motion.a
+            href={whatsappHref}
+            target="_blank"
+            rel="noreferrer"
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center justify-center w-full rounded-2xl py-4 text-[11px] tracking-[0.28em] uppercase transition-opacity duration-300 hover:opacity-90"
+            style={{
+              background: '#d89f94',
+              color: '#fff',
+              boxShadow: '0 4px 20px rgba(216, 159, 148, 0.35)',
+            }}
+          >
+            Pedir por WhatsApp
+          </motion.a>
+        </motion.div>
       </main>
 
-      <div className="h-24 sm:h-0" />
+      {/* Footer */}
+      <motion.footer
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.7 }}
+        className="py-6 flex justify-center"
+      >
+        <p className="text-[9px] tracking-[0.22em] uppercase text-[#e0c4ba]">
+          Amaranta Florería
+        </p>
+      </motion.footer>
     </div>
   );
 }
