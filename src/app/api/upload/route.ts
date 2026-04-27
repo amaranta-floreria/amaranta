@@ -9,11 +9,15 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: 'No se recibió ningún archivo.' }, { status: 400 });
   }
 
-  const blob = await put(`products/${Date.now()}-${file.name}`, file, {
-    access: 'public',
-  });
-
-  return NextResponse.json({ url: blob.url });
+  try {
+    const blob = await put(`products/${Date.now()}-${file.name}`, file, {
+      access: 'public',
+    });
+    return NextResponse.json({ url: blob.url });
+  } catch (err) {
+    console.error('Blob upload error:', err);
+    return NextResponse.json({ error: 'Error al subir la imagen.' }, { status: 500 });
+  }
 }
 
 export async function DELETE(request: Request): Promise<NextResponse> {

@@ -123,8 +123,12 @@ function ImageCell({
       const fd = new FormData();
       fd.append('file', file);
       const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       if (data.url) onUpdate(data.url);
+    } catch (err) {
+      console.error('Upload error:', err);
+      alert(err instanceof Error ? err.message : 'Error al subir la imagen.');
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = '';
@@ -357,8 +361,10 @@ function CreateProductForm({
       const fd = new FormData();
       fd.append('file', imageFile);
       const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
-      finalImageUrl = data.url ?? '';
+      if (!data.url) throw new Error('No se recibió URL de la imagen.');
+      finalImageUrl = data.url;
     }
 
     setSavingStatus('saving');
@@ -950,22 +956,30 @@ function AddCatalogForm({
 
     let finalCoverUrl = coverImageUrl;
 
-    if (coverImageFile) {
-      setSavingStatus('uploading');
-      const fd = new FormData();
-      fd.append('file', coverImageFile);
-      const res = await fetch('/api/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      finalCoverUrl = data.url ?? '';
-    }
+    try {
+      if (coverImageFile) {
+        setSavingStatus('uploading');
+        const fd = new FormData();
+        fd.append('file', coverImageFile);
+        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        if (!data.url) throw new Error('No se recibió URL de la imagen.');
+        finalCoverUrl = data.url;
+      }
 
-    setSavingStatus('saving');
-    const newCat: Omit<FirestoreCatalog, 'id'> = {
-      name, slug, description, coverImageUrl: finalCoverUrl, active: true, order: Date.now(),
-    };
-    const id = await addCatalog(newCat);
-    onAdd({ ...newCat, id });
-    setSavingStatus('idle');
+      setSavingStatus('saving');
+      const newCat: Omit<FirestoreCatalog, 'id'> = {
+        name, slug, description, coverImageUrl: finalCoverUrl, active: true, order: Date.now(),
+      };
+      const id = await addCatalog(newCat);
+      onAdd({ ...newCat, id });
+      setSavingStatus('idle');
+    } catch (err) {
+      console.error('Error al guardar catálogo:', err);
+      alert(err instanceof Error ? err.message : 'Error inesperado al guardar.');
+      setSavingStatus('idle');
+    }
   }
 
   const buttonLabel =
