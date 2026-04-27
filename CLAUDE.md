@@ -23,7 +23,7 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 NEXT_PUBLIC_FIREBASE_APP_ID
-NEXT_PUBLIC_ADMIN_EMAIL     # the single authorized admin email
+NEXT_PUBLIC_ADMIN_EMAILS    # comma-separated list of authorized admin emails (case-insensitive)
 BLOB_READ_WRITE_TOKEN       # Vercel Blob token for image uploads
 ```
 
@@ -38,7 +38,7 @@ BLOB_READ_WRITE_TOKEN       # Vercel Blob token for image uploads
 
 **Auth flow:**
 
-- `src/contexts/AuthContext.tsx` exposes `useAuth()` with `{ user, isAdmin, logout }`. Admin check is `user.email === NEXT_PUBLIC_ADMIN_EMAIL`.
+- `src/contexts/AuthContext.tsx` exposes `useAuth()` with `{ user, isAdmin, logout }`. Admin check is `NEXT_PUBLIC_ADMIN_EMAILS.includes(user.email)` (comma-separated list, case-insensitive). Falls back to legacy `NEXT_PUBLIC_ADMIN_EMAIL` if the new var is unset.
 - `src/app/admin/layout.tsx` wraps every admin route in `<AuthProvider>` and an `AuthGuard` that redirects unauthenticated users to `/admin/login`.
 
 **Image uploads:**
