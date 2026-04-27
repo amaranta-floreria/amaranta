@@ -72,8 +72,9 @@ export default function DynamicProductDetailPage({ params }: Props) {
     );
   }
 
+  const productUrl = typeof window !== 'undefined' ? window.location.href : '';
   const whatsappMessage = encodeURIComponent(
-    `Hola! Me interesa este producto: ${product.name} ($${product.price.toLocaleString('es-MX')})`
+    `Hola! Me interesa este producto: ${product.name} ($${product.price.toLocaleString('es-MX')})\n${productUrl}`
   );
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
 
