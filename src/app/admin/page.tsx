@@ -478,6 +478,208 @@ function CreateProductForm({
   );
 }
 
+// ─── Product edit modal ──────────────────────────────────────────────────────
+
+function arraysEqualUnordered(a: string[], b: string[]) {
+  if (a.length !== b.length) return false;
+  const sa = [...a].sort();
+  const sb = [...b].sort();
+  return sa.every((v, i) => v === sb[i]);
+}
+
+function ProductEditModal({
+  product,
+  allCatalogs,
+  onClose,
+  onSave,
+}: {
+  product: AdminProduct;
+  allCatalogs: FirestoreCatalog[];
+  onClose: () => void;
+  onSave: (updates: Partial<AdminProduct>) => Promise<void>;
+}) {
+  const [name, setName] = useState(product.name);
+  const [price, setPrice] = useState(String(product.price));
+  const [description, setDescription] = useState(product.description ?? '');
+  const [longDescription, setLongDescription] = useState(product.longDescription ?? '');
+  const [imageUrl, setImageUrl] = useState(product.imageUrl ?? '');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [catalogIds, setCatalogIds] = useState<string[]>(product.catalogIds ?? []);
+  const [savingStatus, setSavingStatus] = useState<'idle' | 'uploading' | 'saving'>('idle');
+
+  const isSaving = savingStatus !== 'idle';
+  const inp = 'w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-rose-300';
+
+  const hasChanges =
+    name !== product.name ||
+    Number(price) !== product.price ||
+    description !== (product.description ?? '') ||
+    longDescription !== (product.longDescription ?? '') ||
+    imageUrl !== (product.imageUrl ?? '') ||
+    imageFile !== null ||
+    !arraysEqualUnordered(catalogIds, product.catalogIds ?? []);
+
+  function handleFileSelect(file: File, localPreview: string) {
+    setImageFile(file);
+    setImagePreview(localPreview);
+    setImageUrl('');
+  }
+
+  function handleUrlChange(url: string) {
+    setImageUrl(url);
+    setImageFile(null);
+    setImagePreview('');
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!hasChanges || !name || !price) return;
+
+    let finalImageUrl = imageUrl;
+    try {
+      if (imageFile) {
+        setSavingStatus('uploading');
+        const fd = new FormData();
+        fd.append('file', imageFile);
+        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        if (!data.url) throw new Error('No se recibió URL de la imagen.');
+        finalImageUrl = data.url;
+      }
+
+      setSavingStatus('saving');
+      await onSave({
+        name,
+        price: Number(price),
+        description,
+        longDescription,
+        imageUrl: finalImageUrl,
+        catalogIds,
+      });
+      setSavingStatus('idle');
+      onClose();
+    } catch (err) {
+      console.error('Error al guardar producto:', err);
+      alert(err instanceof Error ? err.message : 'Error inesperado al guardar.');
+      setSavingStatus('idle');
+    }
+  }
+
+  const buttonLabel =
+    savingStatus === 'uploading' ? 'Subiendo imagen…' :
+    savingStatus === 'saving'    ? 'Guardando…' :
+                                   'Guardar cambios';
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      onClick={() => { if (!isSaving) onClose(); }}
+    >
+      <div
+        className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <form onSubmit={handleSubmit}>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-rose-100 sticky top-0 bg-white">
+            <p className="text-xs font-medium text-[#b5606a] uppercase tracking-widest">Editar producto</p>
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={isSaving}
+              className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-40"
+              title="Cerrar"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="p-6 grid grid-cols-[200px_1fr] gap-6">
+            <div>
+              <p className="text-xs text-gray-500 mb-2">Imagen</p>
+              <ImageUploadArea
+                preview={imagePreview || imageUrl}
+                urlValue={imageUrl}
+                hasPendingFile={!!imageFile}
+                onFile={handleFileSelect}
+                onUrl={handleUrlChange}
+              />
+            </div>
+
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">Nombre *</label>
+                  <input required className={inp} value={name} onChange={(e) => setName(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">Precio (MXN) *</label>
+                  <input required type="number" className={inp} value={price} onChange={(e) => setPrice(e.target.value)} />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Descripción corta</label>
+                <input className={inp} value={description} onChange={(e) => setDescription(e.target.value)} />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 mb-1 block">Descripción larga</label>
+                <textarea className={inp} rows={4} value={longDescription} onChange={(e) => setLongDescription(e.target.value)} />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 mb-2 block">Catálogos</label>
+                {allCatalogs.length === 0 ? (
+                  <p className="text-xs text-gray-400 italic">No hay catálogos disponibles aún.</p>
+                ) : (
+                  <div className="flex flex-wrap gap-3">
+                    {allCatalogs.map((cat) => (
+                      <label key={cat.id} className="flex items-center gap-2 text-sm cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={catalogIds.includes(cat.slug)}
+                          onChange={(e) =>
+                            setCatalogIds((prev) =>
+                              e.target.checked ? [...prev, cat.slug] : prev.filter((s) => s !== cat.slug)
+                            )
+                          }
+                          className="accent-[#b5606a]"
+                        />
+                        <span>{cat.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 px-6 py-4 border-t border-rose-100 bg-rose-50/50 sticky bottom-0">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={isSaving}
+              className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-40"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={!hasChanges || isSaving}
+              className="flex items-center gap-1.5 px-4 py-2 bg-[#b5606a] text-white text-sm rounded-lg hover:bg-[#9a4f59] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSaving ? <Spinner sm /> : <Check className="w-3.5 h-3.5" />}
+              {buttonLabel}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── Product library view ────────────────────────────────────────────────────
 
 function ProductLibraryView({ allCatalogs }: { allCatalogs: FirestoreCatalog[] }) {
@@ -485,14 +687,15 @@ function ProductLibraryView({ allCatalogs }: { allCatalogs: FirestoreCatalog[] }
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null);
 
   useEffect(() => {
     getAllProducts().then(setProducts).finally(() => setLoading(false));
   }, []);
 
-  async function handleUpdate(id: string, field: string, value: string | number | string[]) {
-    await updateProduct(id, { [field]: value });
-    setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
+  async function handleSaveProduct(id: string, updates: Partial<AdminProduct>) {
+    await updateProduct(id, updates);
+    setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
   }
 
   async function handleDelete(id: string) {
@@ -559,57 +762,58 @@ function ProductLibraryView({ allCatalogs }: { allCatalogs: FirestoreCatalog[] }
           {products.map((product, i) => (
             <div
               key={product.id}
-              className={`grid grid-cols-[72px_1fr_88px_2fr_2fr_180px_44px] gap-4 px-4 py-4 items-start text-sm ${i < products.length - 1 ? 'border-b border-rose-50' : ''}`}
+              onClick={() => setEditingProduct(product)}
+              className={`grid grid-cols-[72px_1fr_88px_2fr_2fr_180px_44px] gap-4 px-4 py-4 items-start text-sm cursor-pointer hover:bg-rose-50/40 transition-colors ${i < products.length - 1 ? 'border-b border-rose-50' : ''}`}
             >
               {/* Image */}
-              <ImageCell
-                imageUrl={product.imageUrl}
-                onUpdate={(url) => handleUpdate(product.id, 'imageUrl', url)}
-              />
+              <div className="w-16 h-16 rounded-lg overflow-hidden bg-rose-50 flex-shrink-0">
+                {product.imageUrl ? (
+                  <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-rose-200">
+                    <Flower2 className="w-5 h-5" />
+                  </div>
+                )}
+              </div>
 
               {/* Name */}
-              <div className="font-medium text-gray-800 min-w-0">
-                <EditableCell
-                  value={product.name}
-                  onSave={(v) => handleUpdate(product.id, 'name', v)}
-                />
+              <div className="font-medium text-gray-800 min-w-0 whitespace-pre-wrap break-words">
+                {product.name}
               </div>
 
               {/* Price */}
               <div className="text-[#b5606a] font-medium">
-                <EditableCell
-                  value={product.price}
-                  type="number"
-                  onSave={(v) => handleUpdate(product.id, 'price', v)}
-                />
+                ${Number(product.price).toLocaleString('es-MX')}
               </div>
 
               {/* Short description */}
-              <div className="text-gray-500 text-xs">
-                <EditableCell
-                  value={product.description}
-                  onSave={(v) => handleUpdate(product.id, 'description', v)}
-                />
+              <div className="text-gray-500 text-xs whitespace-pre-wrap break-words">
+                {product.description || <span className="italic text-gray-300">—</span>}
               </div>
 
               {/* Long description */}
-              <div className="text-gray-500 text-xs">
-                <EditableCell
-                  value={product.longDescription}
-                  multiline
-                  onSave={(v) => handleUpdate(product.id, 'longDescription', v)}
-                />
+              <div className="text-gray-500 text-xs whitespace-pre-wrap break-words">
+                {product.longDescription || <span className="italic text-gray-300">—</span>}
               </div>
 
               {/* Catalog assignment */}
-              <CatalogChipsCell
-                catalogIds={product.catalogIds ?? []}
-                allCatalogs={allCatalogs}
-                onSave={(ids) => handleUpdate(product.id, 'catalogIds', ids)}
-              />
+              <div className="flex flex-wrap gap-1 items-start">
+                {(product.catalogIds ?? []).length === 0 ? (
+                  <span className="text-gray-300 text-xs italic">Sin catálogo</span>
+                ) : (
+                  (product.catalogIds ?? []).map((slug) => {
+                    const cat = allCatalogs.find((c) => c.slug === slug);
+                    return (
+                      <span key={slug} className="inline-block px-2 py-0.5 bg-rose-50 text-[#b5606a] text-xs rounded-full border border-[#e8c4bc]">
+                        {cat?.name ?? slug}
+                      </span>
+                    );
+                  })
+                )}
+              </div>
 
               {/* Delete */}
-              <div className="flex justify-center">
+              <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={() => handleDelete(product.id)}
                   disabled={deletingId === product.id}
@@ -621,6 +825,15 @@ function ProductLibraryView({ allCatalogs }: { allCatalogs: FirestoreCatalog[] }
             </div>
           ))}
         </div>
+      )}
+
+      {editingProduct && (
+        <ProductEditModal
+          product={editingProduct}
+          allCatalogs={allCatalogs}
+          onClose={() => setEditingProduct(null)}
+          onSave={(updates) => handleSaveProduct(editingProduct.id, updates)}
+        />
       )}
     </div>
   );
